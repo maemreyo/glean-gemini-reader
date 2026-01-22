@@ -1,7 +1,7 @@
 import ReactDOM from 'react-dom/client';
-import ThemeMenu from '@/components/ThemeMenu';
-import { autoExpandSources } from '@/utils/autoClicker';
-import '@/assets/styles.css';
+import ThemeMenu from '../src/components/ThemeMenu';
+import { autoExpandSources } from '../src/utils/autoClicker';
+import '../src/assets/styles.css';
 
 export default defineContentScript({
   matches: ['https://gemini.google.com/*'],
