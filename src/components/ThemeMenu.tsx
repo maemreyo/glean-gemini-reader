@@ -22,9 +22,42 @@ function applyTheme(theme: Theme) {
   document.body.classList.add(effectiveTheme);
 }
 
+function exitReadingMode() {
+  // Find and click the close button on the deep-research-immersive-panel
+  const panel = document.querySelector('deep-research-immersive-panel');
+  if (panel) {
+    // Try to find a close button
+    const closeButton = panel.querySelector('.close-button, [aria-label="Close"], button[class*="close"]');
+    if (closeButton instanceof HTMLElement) {
+      closeButton.click();
+      return;
+    }
+  }
+  
+  // Alternative: close via Escape key
+  document.body.dispatchEvent(new KeyboardEvent('keydown', {
+    key: 'Escape',
+    code: 'Escape',
+    keyCode: 27,
+    which: 27,
+    bubbles: true
+  }));
+  
+  // Fallback: reload page without deep-research query param
+  const url = new URL(window.location.href);
+  url.searchParams.delete('deep-research');
+  window.history.replaceState({}, '', url);
+  location.reload();
+}
+
 export function ThemeMenu() {
   const [activeTheme, setActiveTheme] = useState<Theme>('theme-system');
   const [isExpanded, setIsExpanded] = useState(false);
+
+  // Exit button - always visible at top-left
+  const handleExit = useCallback(() => {
+    exitReadingMode();
+  }, []);
 
   useEffect(() => {
     const saved = localStorage.getItem('gemini-reader-theme') as Theme | null;
@@ -100,17 +133,50 @@ export function ThemeMenu() {
     <div
       style={{
         position: 'fixed',
-        bottom: '24px',
-        right: '24px',
+        top: '16px',
+        left: '16px',
         zIndex: 2147483647,
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'flex-end',
+        alignItems: 'flex-start',
         gap: '8px',
       }}
       role="menu"
       aria-label="Theme selector"
     >
+      {/* Exit button - always visible at top-left */}
+      <button
+        onClick={handleExit}
+        aria-label="Exit Reading Mode"
+        tabIndex={0}
+        type="button"
+        style={{
+          width: '40px',
+          height: '40px',
+          borderRadius: '8px',
+          border: '1px solid rgba(0, 0, 0, 0.2)',
+          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          cursor: 'pointer',
+          fontSize: '18px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+          transition: 'all 0.2s ease',
+          outline: 'none',
+        }}
+        onFocus={(e) => {
+          e.currentTarget.style.boxShadow = '0 0 0 2px #dc3545';
+          e.currentTarget.style.borderColor = '#dc3545';
+        }}
+        onBlur={(e) => {
+          e.currentTarget.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+          e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.2)';
+        }}
+      >
+        ✕
+      </button>
+
       {isExpanded && (
         <div
           style={{

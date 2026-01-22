@@ -1,8 +1,7 @@
 /* ==========================================================================
-   1. ĐỊNH NGHĨA BẢNG MÀU (THEME VARIABLES)
+   1. THEME VARIABLES
    ========================================================================== */
 :root {
-    /* Default Light Theme */
     --bg-page: #f5f5f7;
     --bg-paper: #ffffff;
     --text-main: #2c3e50;
@@ -17,7 +16,6 @@
     --table-border: #e0e0e0;
 }
 
-/* Theme Sepia */
 body.theme-sepia {
     --bg-page: #f0e6d2;
     --bg-paper: #f9f2e6;
@@ -33,7 +31,6 @@ body.theme-sepia {
     --table-border: #dccfb9;
 }
 
-/* Theme Dark */
 body.theme-dark {
     --bg-page: #121212;
     --bg-paper: #1e1e1e;
@@ -50,10 +47,11 @@ body.theme-dark {
 }
 
 /* ==========================================================================
-   2. DEEP RESEARCH PANEL STYLING
+   2. PANEL STYLING
    ========================================================================== */
-
-deep-research-immersive-panel, [is="deep-research-immersive-panel"] {
+deep-research-immersive-panel,
+deep-research-immersive-panel[_nghost-ng-c],
+deep-research-immersive-panel[class*="ng-tns"] {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
@@ -63,20 +61,14 @@ deep-research-immersive-panel, [is="deep-research-immersive-panel"] {
     background-color: var(--bg-page) !important;
     padding: 0 !important;
     margin: 0 !important;
-
-    /* Fix for black borders */
     --mat-sidenav-container-background-color: var(--bg-page) !important;
     --mdc-theme-surface: var(--bg-page) !important;
 }
 
-/* Remove background/border from child containers */
-deep-research-immersive-panel .container,
-deep-research-immersive-panel response-container,
-deep-research-immersive-panel .response-container,
-deep-research-immersive-panel .presented-response-container {
-    background-color: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
+/* Theme menu styling */
+gemini-reader-menu,
+#gemini-reader-menu {
+    z-index: 2147483647 !important;
 }
 
 /* Hide unwanted elements */
@@ -89,11 +81,7 @@ deep-research-immersive-panel thinking-panel,
 deep-research-immersive-panel .response-container-footer,
 deep-research-immersive-panel source-footnote,
 deep-research-immersive-panel .superscript,
-deep-research-immersive-panel sup {
-    display: none !important;
-}
-
-/* Hide source lists at bottom */
+deep-research-immersive-panel sup,
 deep-research-source-lists {
     display: none !important;
 }
@@ -101,12 +89,13 @@ deep-research-source-lists {
 /* ==========================================================================
    3. TYPOGRAPHY
    ========================================================================== */
-
-deep-research-immersive-panel .container {
-    width: 100% !important;
-    height: 100% !important;
-    overflow-y: auto !important;
-    display: block !important;
+deep-research-immersive-panel .container,
+deep-research-immersive-panel .container[_ngcontent],
+structured-content-container .container,
+structured-content-container .container[_ngcontent],
+.response-container,
+.response-container[_ngcontent] {
+    background-color: transparent !important;
 }
 
 deep-research-immersive-panel .markdown-main-panel {
@@ -114,19 +103,14 @@ deep-research-immersive-panel .markdown-main-panel {
     width: 95% !important;
     margin: 40px auto 100px auto !important;
     padding: 60px 70px !important;
-
     background-color: var(--bg-paper) !important;
-    color: var(--text-main) !important;
     box-shadow: var(--shadow) !important;
-
     border-radius: 8px !important;
     font-family: 'Merriweather', 'Georgia', serif !important;
     font-size: 19px !important;
     line-height: 1.8 !important;
-    transition: background-color 0.3s, color 0.3s;
 }
 
-/* Headings */
 deep-research-immersive-panel h1 {
     font-family: 'Segoe UI', Helvetica, sans-serif !important;
     font-size: 2.4em !important;
@@ -152,15 +136,21 @@ deep-research-immersive-panel h3 {
     margin-top: 30px !important;
 }
 
+deep-research-immersive-panel h4 {
+    font-family: 'Segoe UI', Helvetica, sans-serif !important;
+    font-size: 1.1em !important;
+    color: var(--text-heading) !important;
+    margin-top: 20px !important;
+}
+
 deep-research-immersive-panel p,
 deep-research-immersive-panel li {
     color: var(--text-main) !important;
 }
 
 /* ==========================================================================
-   4. INLINE SOURCES (COMPACT LIST)
+   4. INLINE SOURCES
    ========================================================================== */
-
 sources-carousel-inline {
     display: block !important;
     margin: 10px 0 !important;
@@ -168,7 +158,6 @@ sources-carousel-inline {
     clear: both !important;
 }
 
-/* Fake button styling */
 sources-carousel-inline .button-container::before {
     content: "⊕ Nguồn tham khảo";
     font-size: 11px;
@@ -182,7 +171,6 @@ sources-carousel-inline .button-container::before {
     display: inline-block !important;
 }
 
-/* Container link styling */
 sources-carousel-inline sources-carousel,
 sources-carousel-inline .container,
 sources-carousel-inline .carousel-container,
@@ -212,7 +200,6 @@ sources-carousel-inline .carousel-content {
     gap: 0 !important;
 }
 
-/* Link Style */
 sources-carousel-inline .source-card-content > a {
     display: block !important;
     width: 100% !important;
@@ -220,7 +207,6 @@ sources-carousel-inline .source-card-content > a {
     background-color: transparent !important;
     border-bottom: 1px solid var(--table-border) !important;
     padding: 6px 0 !important;
-
     color: var(--link-text) !important;
     font-family: 'Segoe UI', sans-serif !important;
     font-size: 13px !important;
@@ -243,7 +229,6 @@ sources-carousel-inline .source-card-subtitle {
 /* ==========================================================================
    5. TABLES
    ========================================================================== */
-
 deep-research-immersive-panel .table-footer {
     display: none !important;
 }
@@ -254,9 +239,7 @@ deep-research-immersive-panel table {
     margin: 30px 0 !important;
     font-family: 'Segoe UI', sans-serif !important;
     font-size: 0.9em !important;
-
     background-color: var(--bg-paper) !important;
-    color: var(--text-main) !important;
     border: 1px solid var(--table-border) !important;
 }
 
@@ -276,44 +259,13 @@ deep-research-immersive-panel tbody tr td {
     padding: 12px !important;
 }
 
-/* Reset table child colors */
 deep-research-immersive-panel table * {
     background-color: transparent !important;
-    color: inherit !important;
 }
 
 /* ==========================================================================
-   6. PRINT STYLES (PDF EXPORT)
+   6. ADDITIONAL ELEMENTS
    ========================================================================== */
-
-@media print {
-    deep-research-immersive-panel, [is="deep-research-immersive-panel"] {
-        position: absolute !important;
-        background-color: white !important;
-        overflow: visible !important;
-        height: auto !important;
-    }
-
-    deep-research-immersive-panel .markdown-main-panel {
-        box-shadow: none !important;
-        margin: 0 !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        color: black !important;
-        background: white !important;
-    }
-
-    /* Hide theme menu when printing */
-    #gemini-reader-menu,
-    gemini-reader-menu {
-        display: none !important;
-    }
-}
-
-/* ==========================================================================
-   7. ADDITIONAL ELEMENTS
-   ========================================================================== */
-
 deep-research-immersive-panel code {
     background-color: var(--table-header) !important;
     padding: 2px 6px !important;
@@ -351,7 +303,28 @@ deep-research-immersive-panel a:hover {
     text-decoration: underline !important;
 }
 
-/* Ensure theme menu stays on top */
-gemini-reader-menu {
-    z-index: 2147483647 !important;
+/* ==========================================================================
+   7. PRINT STYLES
+   ========================================================================== */
+@media print {
+    deep-research-immersive-panel {
+        position: absolute !important;
+        background-color: white !important;
+        overflow: visible !important;
+        height: auto !important;
+    }
+
+    deep-research-immersive-panel .markdown-main-panel {
+        box-shadow: none !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        color: black !important;
+        background: white !important;
+    }
+
+    #gemini-reader-menu,
+    gemini-reader-menu {
+        display: none !important;
+    }
 }
