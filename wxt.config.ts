@@ -6,7 +6,6 @@ export default defineConfig({
   alias: {
     '@': 'src',
   },
-  srcDir: 'src',
   manifest: {
     name: 'Gemini Ultimate Reader',
     description: 'Beautiful reading mode for Gemini with theme switching',
