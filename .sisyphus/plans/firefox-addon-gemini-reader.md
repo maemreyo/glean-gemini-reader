@@ -164,7 +164,7 @@ Tạo Firefox addon "Gemini Ultimate Reader" với WXT + React 19, features: the
 - [ ] 1. Setup WXT Project với React 19 Template
 
   **What to do:**
-  - Run `npx wxt@latest init gemini-reader`
+  - Run `npx wxt@latest init .`
   - Select React template
   - cd và chạy `npm install`
   - Upgrade to React 19: `npm install react@19 react-dom@19`
@@ -190,9 +190,8 @@ Tạo Firefox addon "Gemini Ultimate Reader" với WXT + React 19, features: the
   - React 19 install: `npm install react@19 react-dom@19`
 
   **Acceptance Criteria:**
-  - [ ] Command: `npx wxt@latest init gemini-reader --template react`
-  - [ ] Directory: `gemini-reader/` created
-  - [ ] Command: `cd gemini-reader && npm install`
+  - [ ] Command: `npx wxt@latest init  --template react`
+  - [ ] Command: `npm install`
   - [ ] Command: `npm install react@19 react-dom@19`
   - [ ] Command: `npm install -D @wxt-dev/module-react`
   - [ ] Verify: `package.json` has `"react": "^19.0.0"`, `"react-dom": "^19.0.0"`
@@ -926,8 +925,7 @@ Tạo Firefox addon "Gemini Ultimate Reader" với WXT + React 19, features: the
 ### Verification Commands
 ```bash
 # Setup and build
-npx wxt@latest init gemini-reader --template react
-cd gemini-reader
+npx wxt@latest init . --template react
 npm install
 npm install react@19 react-dom@19
 npm install -D @wxt-dev/module-react
@@ -975,7 +973,6 @@ npm test
 
 ### Files Created
 ```
-gemini-reader/
 ├── wxt.config.ts
 ├── src/
 │   ├── components/

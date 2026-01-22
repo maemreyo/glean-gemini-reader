@@ -10,27 +10,25 @@ export default defineContentScript({
   async main(ctx): Promise<void> {
     console.log('[Gemini Reader] Initialized');
 
-    let clickerInterval: ReturnType<typeof setInterval> | undefined;
+    let interval: ReturnType<typeof setInterval>;
 
     const ui = await createShadowRootUi(ctx, {
       name: 'gemini-reader-menu',
       position: 'overlay',
       anchor: 'body',
       append: 'last',
-      onMount: (container: HTMLElement) => {
+      onMount: (container) => {
         const root = ReactDOM.createRoot(container);
         root.render(<ThemeMenu />);
-        clickerInterval = setInterval(autoExpandSources, 1500);
+        interval = setInterval(autoExpandSources, 1500);
         return { root };
       },
-      onRemove: (elements?: { root: ReturnType<typeof ReactDOM.createRoot> }) => {
-        if (clickerInterval !== undefined) {
-          clearInterval(clickerInterval);
-        }
+      onRemove: (elements) => {
+        clearInterval(interval);
         elements?.root.unmount();
       },
     });
 
-    await ui.mount();
+    ui.mount();
   },
 });
