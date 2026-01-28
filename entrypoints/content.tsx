@@ -1,4 +1,5 @@
 import ReactDOM from 'react-dom/client';
+import { useState, useEffect } from 'react';
 import ThemeMenu from '../src/components/ThemeMenu';
 import themeStyles from '../src/assets/styles.css?inline';
 
@@ -40,6 +41,32 @@ function styleAngularComponent(): void {
   // No additional JS styling needed - styles.css defines all rules
 }
 
+function App() {
+  const [readingMode, setReadingMode] = useState(true);
+
+  useEffect(() => {
+    if (readingMode) {
+      injectStyles();
+    } else {
+      document.getElementById('gemini-reader-styles')?.remove();
+      document.body.classList.remove('theme-sepia', 'theme-dark', 'theme-light', 'theme-system');
+    }
+  }, [readingMode]);
+
+  return (
+    <ThemeMenu
+      readingMode={readingMode}
+      onToggleReadingMode={setReadingMode}
+      onThemeChange={(theme) => {
+        if (readingMode) {
+          applyThemeVariables(theme);
+          styleAngularComponent();
+        }
+      }}
+    />
+  );
+}
+
 export default defineContentScript({
   matches: ['https://gemini.google.com/*'],
   cssInjectionMode: 'manual',
@@ -47,6 +74,7 @@ export default defineContentScript({
   async main(ctx): Promise<void> {
     console.log('[Gemini Reader] Initialized');
 
+    // Initial injection
     injectStyles();
     applyThemeVariables('light');
 
@@ -74,11 +102,7 @@ export default defineContentScript({
       styleAngularComponent();
     }, 2000);
 
-    ctx.addEventListener('unload', () => {
-      observer.disconnect();
-      clearInterval(checkInterval);
-      document.getElementById('gemini-reader-styles')?.remove();
-    });
+
 
     const ui = await createShadowRootUi(ctx, {
       name: 'gemini-reader-menu',
@@ -87,14 +111,7 @@ export default defineContentScript({
       append: 'last',
       onMount: (container) => {
         const root = ReactDOM.createRoot(container);
-        root.render(
-          <ThemeMenu
-            onThemeChange={(theme) => {
-              applyThemeVariables(theme);
-              styleAngularComponent();
-            }}
-          />
-        );
+        root.render(<App />);
         return { root };
       },
       onRemove: (elements) => {

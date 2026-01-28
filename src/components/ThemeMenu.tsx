@@ -1,6 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
+import { X, BookOpen } from 'lucide-react';
 
 type Theme = 'theme-light' | 'theme-sepia' | 'theme-dark' | 'theme-system';
+
+interface ThemeMenuProps {
+  readingMode: boolean;
+  onToggleReadingMode: (active: boolean) => void;
+  onThemeChange?: (theme: string) => void;
+}
 
 const themes: { id: Theme; icon: string; title: string }[] = [
   { id: 'theme-light', icon: '☀️', title: 'Light' },
@@ -22,6 +29,7 @@ function applyTheme(theme: Theme) {
   document.body.classList.add(effectiveTheme);
 }
 
+// Keep existing function to satisfy requirements, even if functionality is toggled via prop
 function exitReadingMode() {
   // Find and click the close button on the deep-research-immersive-panel
   const panel = document.querySelector('deep-research-immersive-panel');
@@ -50,22 +58,29 @@ function exitReadingMode() {
   location.reload();
 }
 
-export function ThemeMenu() {
+export function ThemeMenu({ readingMode, onToggleReadingMode, onThemeChange }: ThemeMenuProps) {
   const [activeTheme, setActiveTheme] = useState<Theme>('theme-system');
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // Exit button - always visible at top-left
-  const handleExit = useCallback(() => {
-    exitReadingMode();
-  }, []);
+  // If reading mode is inactive, only show the toggle button
+  const handleToggle = useCallback(() => {
+    onToggleReadingMode(!readingMode);
+  }, [readingMode, onToggleReadingMode]);
 
   useEffect(() => {
     const saved = localStorage.getItem('gemini-reader-theme') as Theme | null;
     const initialTheme = saved || 'theme-system';
     setActiveTheme(initialTheme);
-    applyTheme(initialTheme);
+    
+    // Only apply theme if reading mode is active
+    if (readingMode) {
+      applyTheme(initialTheme);
+    }
 
     const handleSystemThemeChange = (e: MediaQueryListEvent) => {
+      // Only react to system changes if reading mode is active
+      if (!readingMode) return;
+
       const current = localStorage.getItem('gemini-reader-theme') as Theme | null;
       if (current === 'theme-system' || !current) {
         const newTheme = e.matches ? 'theme-dark' : 'theme-light';
@@ -80,14 +95,15 @@ export function ThemeMenu() {
     return () => {
       mediaQuery.removeEventListener('change', handleSystemThemeChange);
     };
-  }, []);
+  }, [readingMode]); // Add readingMode dependency
 
   const changeTheme = useCallback((themeId: Theme) => {
     setActiveTheme(themeId);
     localStorage.setItem('gemini-reader-theme', themeId);
     applyTheme(themeId);
     setIsExpanded(false);
-  }, []);
+    onThemeChange?.(themeId);
+  }, [onThemeChange]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent, index: number) => {
@@ -129,6 +145,54 @@ export function ThemeMenu() {
 
   const activeIndex = themes.findIndex((t) => t.id === activeTheme);
 
+  // If reading mode is INACTIVE, show only the Enable button (Book icon)
+  if (!readingMode) {
+    return (
+      <div
+        style={{
+          position: 'fixed',
+          top: '16px',
+          left: '16px',
+          zIndex: 2147483647,
+        }}
+      >
+        <button
+          onClick={handleToggle}
+          aria-label="Enable Reading Mode"
+          tabIndex={0}
+          type="button"
+          style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: '8px',
+            border: '1px solid rgba(0, 0, 0, 0.2)',
+            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+            cursor: 'pointer',
+            fontSize: '18px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+            transition: 'all 0.2s ease',
+            outline: 'none',
+            color: '#333',
+          }}
+          onFocus={(e) => {
+            e.currentTarget.style.boxShadow = '0 0 0 2px #007bff';
+            e.currentTarget.style.borderColor = '#007bff';
+          }}
+          onBlur={(e) => {
+            e.currentTarget.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+            e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.2)';
+          }}
+        >
+          <BookOpen size={20} />
+        </button>
+      </div>
+    );
+  }
+
+  // If reading mode is ACTIVE, show Exit button (X icon) + Theme Menu
   return (
     <div
       style={{
@@ -146,7 +210,7 @@ export function ThemeMenu() {
     >
       {/* Exit button - always visible at top-left */}
       <button
-        onClick={handleExit}
+        onClick={handleToggle}
         aria-label="Exit Reading Mode"
         tabIndex={0}
         type="button"
@@ -164,6 +228,7 @@ export function ThemeMenu() {
           boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
           transition: 'all 0.2s ease',
           outline: 'none',
+          color: '#333',
         }}
         onFocus={(e) => {
           e.currentTarget.style.boxShadow = '0 0 0 2px #dc3545';
@@ -174,7 +239,7 @@ export function ThemeMenu() {
           e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.2)';
         }}
       >
-        ✕
+        <X size={20} />
       </button>
 
       {isExpanded && (
